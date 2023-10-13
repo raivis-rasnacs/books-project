@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+Mans grāmatu plaukts
+{% endblock %}
+
+{% block head_inners %}
+{% endblock %}
+
+{% block main_content %}
+    <table class="table">
+        <tr>
+            <th>Autors</th>
+            <th>Nosaukums</th>
+            <th>Lappušu skaits</th>
+            <th>Žanrs</th>
+        </tr>
+        {% if mybooks != None %}
+            {% for book in mybooks %}
+                <tr>
+                    <td>{{ book[1] }}</td>
+                    <td>{{ book[2] }}</td>
+                    <td>{{ book[3] }}</td>
+                    <td>{{ book[4] }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+                <tr>
+                    <td style="text-align: center;" colspan="4">Nav nevienas grāmatas</td>
+                </tr>
+        {% endif %}
+    </table>
+{% endblock %}

@@ -1,0 +1,15 @@
+ul.nav {
+    background-color: silver;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid grey; 
+}
+
+ul.nav a {
+    color: green;
+}
+
+ul.nav a:visited {
+    color: darkgreen;
+}
