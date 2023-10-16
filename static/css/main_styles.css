@@ -13,3 +13,12 @@ ul.nav a {
 ul.nav a:visited {
     color: darkgreen;
 }
+
+form {
+    width: 400px !important;
+}
+
+form * {
+    margin-bottom: 10px;
+    width: 100%;
+}
