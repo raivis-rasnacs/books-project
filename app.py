@@ -10,6 +10,7 @@ import sqlite3
 from pprint import pprint
 
 con = sqlite3.connect("db/books.db", check_same_thread=False)
+con.row_factory = sqlite3.Row
 cur = con.cursor()
 
 app = Flask(__name__)
@@ -27,9 +28,9 @@ def index():
             SELECT 
             Books.book_id,
             Books.author,
-            Books.name,
+            Books.name AS book_name,
             Books.pages,
-            Genres.name
+            Genres.name AS genre_name
             FROM Books
             JOIN Genres ON Genres.genre_id = Books.genre_id;
             """
@@ -42,7 +43,11 @@ def index():
 @app.route("/pievienot_gramatu", methods = ["GET", "POST"])
 def add_book():
     if request.method == "POST":
-        pass
+        author = request.form["book_author"]
+        #author = request.form.get("book_author", None)
+        name = request.form["book_name"]
+        pages = request.form["book_pages"]
+        
     else:
         sql = """
             SELECT *
