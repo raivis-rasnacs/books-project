@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+Mans grāmatu plaukts
+{% endblock %}
+
+{% block head_inners %}
+{% endblock %}
+
+{% block main_content %}
+    <form action="/pievienot_zanru" method="post">
+        <input 
+            required
+            class="form-control"
+            type="text" 
+            name="genre_name" 
+            id=""
+            placeholder="Žanrs">
+        
+        <input 
+            class="btn btn-outline-primary"
+            type="submit" 
+            value="Pievienot žanru">
+    </form>
+{% endblock %}

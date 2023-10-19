@@ -3,11 +3,14 @@
 from flask import (
     Flask,
     request,
-    render_template
+    render_template,
+    redirect,
+    flash
 )
 from config import Config
 import sqlite3
 from pprint import pprint
+from uuid import uuid4
 
 con = sqlite3.connect("db/books.db", check_same_thread=False)
 con.row_factory = sqlite3.Row
@@ -47,7 +50,28 @@ def add_book():
         #author = request.form.get("book_author", None)
         name = request.form["book_name"]
         pages = request.form["book_pages"]
+        genre = request.form["book_genre"]
+
+        sql = """INSERT
+                INTO Books
+                (book_id,
+                author,
+                name,
+                pages,
+                genre_id)
+                VALUES 
+                (?, ?, ?, ?, ?);"""
         
+        cur.execute(sql,
+                (str(uuid4()),
+                 author,
+                 name,
+                 int(pages),
+                 genre
+                ))
+        con.commit()
+        flash("Ieraksts pievienots!")
+        return redirect("/")
     else:
         sql = """
             SELECT *
@@ -56,6 +80,13 @@ def add_book():
         genres = res.fetchall()
         pprint(genres)
         return render_template("add_book.html", genres=genres)
+
+@app.route("/pievienot_zanru", methods = ["GET", "POST"])
+def add_genre():
+    if request.method == "POST":
+        pass
+    else:
+        return render_template("add_genre.html")
 
 if app.config["FLASK_ENV"] == "development":
     if __name__ == "__main__":
