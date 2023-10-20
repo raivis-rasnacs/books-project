@@ -5,6 +5,8 @@ Mans grāmatu plaukts
 {% endblock %}
 
 {% block head_inners %}
+<script defer src="{{ url_for('static', filename='js/stars_animation.js') }}"></script>
+
 {% endblock %}
 
 {% block main_content %}
@@ -14,6 +16,7 @@ Mans grāmatu plaukts
             <th>Autors</th>
             <th>Lappušu skaits</th>
             <th>Žanrs</th>
+            <th>Reitings</th>
         </tr>
         {% if mybooks != None %}
             {% for book in mybooks %}
@@ -22,6 +25,35 @@ Mans grāmatu plaukts
                     <td>{{ book["author"] }}</td>
                     <td>{{ book["pages"] }}</td>
                     <td>{{ book["genre_name"] }}</td>
+                    <td>
+                        <div class="stars">
+                            <i 
+                                class="bi bi-star"
+                                onmouseover="animate_stars(this, this.parentElement);"
+                                onmouseleave="hide_animation(this.parentElement);"
+                                "></i>
+                            <i 
+                                class="bi bi-star"
+                                onmouseover="animate_stars(this, this.parentElement);"
+                                onmouseleave="hide_animation(this.parentElement);"
+                                "></i>
+                            <i 
+                                class="bi bi-star"
+                                onmouseover="animate_stars(this, this.parentElement);"
+                                onmouseleave="hide_animation(this.parentElement);"
+                                "></i>
+                            <i 
+                                class="bi bi-star"
+                                onmouseover="animate_stars(this, this.parentElement);"
+                                onmouseleave="hide_animation(this.parentElement);"
+                                "></i>
+                            <i 
+                                class="bi bi-star"
+                                onmouseover="animate_stars(this, this.parentElement);"
+                                onmouseleave="hide_animation(this.parentElement);"
+                                "></i>
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}
         {% else %}

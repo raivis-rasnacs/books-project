@@ -39,7 +39,6 @@ def index():
             """
         res = cur.execute(sql)
         books = res.fetchall()
-        pprint(books)
         
         return render_template("books.html", mybooks=books)
 
@@ -78,13 +77,28 @@ def add_book():
             FROM genres;"""
         res = cur.execute(sql)
         genres = res.fetchall()
-        pprint(genres)
+        
         return render_template("add_book.html", genres=genres)
 
 @app.route("/pievienot_zanru", methods = ["GET", "POST"])
 def add_genre():
     if request.method == "POST":
-        pass
+        genre_name = request.form.get("genre_name")
+
+        sql = """INSERT INTO Genres 
+                    (
+                    genre_id,
+                    name)
+                    VALUES
+                    (?, ?);"""
+        cur.execute(sql,
+                    (str(uuid4()),
+                    genre_name)
+                    )
+        con.commit()
+
+        flash("Žanrs pievienots!")
+        return redirect("/")
     else:
         return render_template("add_genre.html")
 
