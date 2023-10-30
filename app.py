@@ -102,6 +102,28 @@ def add_genre():
     else:
         return render_template("add_genre.html")
 
+@app.route("/set_rating")
+def set_rating():
+    book_id = request.args.get("book_id")
+    value = request.args.get("value")
+    print(book_id, value)
+
+    sql = """INSERT INTO Ratings (
+    rating_id,
+    book_id,
+    score)
+    VALUES (
+    ?, ?, ?
+    );"""
+    cur.execute(sql, (
+        str(uuid4()),
+        book_id,
+        value
+    ))
+    con.commit()
+    flash("Reitings pievienots!")
+    return redirect("/sakums")
+
 if app.config["FLASK_ENV"] == "development":
     if __name__ == "__main__":
         app.run(debug=True)
