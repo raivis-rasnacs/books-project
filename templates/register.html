@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+Reģistrācija
+{% endblock %}
+
+{% block head_inners %}
+{% endblock %}
+
+{% block main_content %}
+    <form action="/register" method="post">
+        <input 
+            class="form-control"
+            type="text" 
+            name="username" 
+            id="">
+        <input 
+            class="form-control"
+            type="password" 
+            name="password1" 
+            minlength="8"
+            id="">
+        <input 
+            class="form-control"
+            type="password" 
+            name="password2" 
+            minlength="8"
+            id="">
+        <select class="form-select" name="role" id="">
+            <option selected disabled value="">Izvēlies lomu</option>
+            <option value="user">lietotājs</option>
+            <option value="admin">administrators</option>
+        </select>
+        <input class="btn btn-success" type="submit" value="Reģistrēties">
+    </form>
+{% endblock %}

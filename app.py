@@ -140,6 +140,60 @@ def set_rating():
     flash("Reitings pievienots!")
     return redirect("/sakums")
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form.get("username")
+        pass1 = request.form.get("password1")
+        pass2 = request.form.get("password2")
+        role = request.form.get("role")
+
+        # pārbauda, vai paroles sakrīt
+        if not pass1 == pass2:
+            flash("Paroles nesakrīt! Mēģini vēlreiz!")
+            return redirect("/register")
+        
+        sql = """
+        SELECT COUNT(username) 
+        FROM Users 
+        WHERE username = ?;
+        """
+        res = cur.execute(sql, (username, ))
+        existing_users = res.fetchall()
+
+        for record in existing_users:
+            for field in record:
+                print(field)
+
+        # pārbauda, vai l-vārds eksistē
+        if existing_users[0]["COUNT(username)"] != 0:
+            flash("Šāds lietotājs jau eksistē! Mēģini vēlreiz!")
+            return redirect("/register")
+        
+        sql = """
+        INSERT INTO Users
+        (user_id, username, password, role)
+        VALUES (
+        ?, ?, ?, ?
+        );"""
+
+        try:
+            cur.execute(sql, (
+                str(uuid4()),
+                username,
+                pass1,
+                role
+            ))
+
+            con.commit()
+            return redirect("/login")
+        except:
+            flash("Datu bāzes kļūda!")
+            return redirect("/register")
+
+    else:
+        return render_template("register.html")
+
 if app.config["FLASK_ENV"] == "development":
     if __name__ == "__main__":
         app.run(debug=True)
