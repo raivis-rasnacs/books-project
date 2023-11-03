@@ -39,8 +39,24 @@ def index():
             """
         res = cur.execute(sql)
         books = res.fetchall()
+
+        # atlasa reitingus
+        sql = """
+            SELECT book_id, SUM(score), COUNT(rating_id)
+            FROM ratings
+            GROUP BY book_id;"""
+        res = cur.execute(sql)
+        ratings = res.fetchall()
+        """ for rating in ratings:
+            print(
+                rating["book_id"], 
+                rating["SUM(score)"],
+                rating["COUNT(rating_id)"]) """
         
-        return render_template("books.html", mybooks=books)
+        return render_template(
+            "books.html", 
+            mybooks=books,
+            ratings_by_books=ratings)
 
 @app.route("/pievienot_gramatu", methods = ["GET", "POST"])
 def add_book():

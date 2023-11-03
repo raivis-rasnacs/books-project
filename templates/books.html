@@ -16,7 +16,9 @@ Mans grāmatu plaukts
             <th>Autors</th>
             <th>Lappušu skaits</th>
             <th>Žanrs</th>
+            <th>Novērtēt</th>
             <th>Reitings</th>
+            <th>Dzēst</th>
         </tr>
         {% if mybooks != None %}
             {% for book in mybooks %}
@@ -63,6 +65,13 @@ Mans grāmatu plaukts
                                 "></i>
                             </a>
                         </div>
+                    </td>
+                    <td>
+                        {% for rating in ratings_by_books %}
+                            {% if book["book_id"] == rating["book_id"] %}
+                                {{ (rating["SUM(score)"]/rating["COUNT(rating_id)"])|round(1) }}
+                            {% endif %}
+                        {% endfor %}
                     </td>
                 </tr>
             {% endfor %}
