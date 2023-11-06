@@ -5,12 +5,17 @@ from flask import (
     request,
     render_template,
     redirect,
-    flash
+    flash,
+    session
 )
 from config import Config
 import sqlite3
 from pprint import pprint
 from uuid import uuid4
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
 
 con = sqlite3.connect("db/books.db", check_same_thread=False)
 con.row_factory = sqlite3.Row
@@ -161,10 +166,6 @@ def register():
         res = cur.execute(sql, (username, ))
         existing_users = res.fetchall()
 
-        for record in existing_users:
-            for field in record:
-                print(field)
-
         # pārbauda, vai l-vārds eksistē
         if existing_users[0]["COUNT(username)"] != 0:
             flash("Šāds lietotājs jau eksistē! Mēģini vēlreiz!")
@@ -181,7 +182,7 @@ def register():
             cur.execute(sql, (
                 str(uuid4()),
                 username,
-                pass1,
+                generate_password_hash(pass1),
                 role
             ))
 
@@ -193,6 +194,42 @@ def register():
 
     else:
         return render_template("register.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        sql = """
+            SELECT *
+            FROM Users
+            WHERE username = ?;
+            """
+        
+        res = cur.execute(sql, (
+            username, 
+        ))
+
+        users = res.fetchall()
+
+        # ja lietotājs neeksistē
+        if not len(users) > 0:
+            flash("Šāds lietotājs neeksistē!")
+            return redirect("/login")
+        
+        if not check_password_hash(users[0]["password"], password):
+            flash("Lietotājvārds un/vai parole nav pareiza!")
+            return redirect("/login")
+        
+        # sesija
+        session["user_id"] = users[0]["user_id"]
+        session["role"] = users[0]["role"]
+
+        flash("Esi autorizējies!")
+        return redirect("\sakums")
+    else:
+        return render_template("login.html")
 
 if app.config["FLASK_ENV"] == "development":
     if __name__ == "__main__":
