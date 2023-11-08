@@ -1,6 +1,7 @@
 
 console.log(1);
 function animate_stars(star_element, div) {
+    console.log(div);
     const stars = div.children;
     for (let i = 0; i < stars.length; i++) {
         stars[i].classList.remove("bi-star")

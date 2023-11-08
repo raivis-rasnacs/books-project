@@ -26,3 +26,18 @@ form * {
 .yellow {
     color: yellow;
 }
+
+.stars > a {
+    text-decoration: none;
+    color: black;
+}
+
+.stars > a:visited {
+    text-decoration: none;
+    color: black;
+}
+
+.stars > a:link {
+    text-decoration: none;
+    color: black;
+}
