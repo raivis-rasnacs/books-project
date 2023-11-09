@@ -45,6 +45,7 @@
         <!-- navigation row -->
         <div class="row">
             <ul class="nav">
+                {% if session["user_id"] %}
                 <li class="nav-item">
                   <a class="nav-link" aria-current="page" href="/sakums">Manas grāmatas</a>
                 </li>
@@ -55,11 +56,16 @@
                     <a class="nav-link" href="/pievienot_zanru">Pievienot žanru</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="/iziet">Iziet</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
                     <a class="nav-link" href="/register">Reģistrēties</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/login">Autorizēties</a>
                 </li>
+                {% endif %}
               </ul>
         </div>
         <hr>

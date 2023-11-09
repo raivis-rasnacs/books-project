@@ -32,36 +32,54 @@ def index():
     if request.method == "POST":
         pass
     else:
-        sql = """
-            SELECT 
-            Books.book_id,
-            Books.author,
-            Books.name AS book_name,
-            Books.pages,
-            Genres.name AS genre_name
-            FROM Books
-            JOIN Genres ON Genres.genre_id = Books.genre_id;
-            """
-        res = cur.execute(sql)
-        books = res.fetchall()
+        if session.get("user_id", None):
+            books = []
+            sql = """
+                SELECT book_id
+                FROM Book_links
+                WHERE user_id = ?;"""
+            res = cur.execute(sql, (session["user_id"], ))
+            book_ids = res.fetchall()
 
-        # atlasa reitingus
-        sql = """
-            SELECT book_id, SUM(score), COUNT(rating_id)
-            FROM ratings
-            GROUP BY book_id;"""
-        res = cur.execute(sql)
-        ratings = res.fetchall()
-        """ for rating in ratings:
-            print(
-                rating["book_id"], 
-                rating["SUM(score)"],
-                rating["COUNT(rating_id)"]) """
-        
-        return render_template(
-            "books.html", 
-            mybooks=books,
-            ratings_by_books=ratings)
+            sql = """
+                SELECT 
+                Books.book_id,
+                Books.author,
+                Books.name AS book_name,
+                Books.pages,
+                Genres.name AS genre_name
+                FROM Books
+                JOIN Genres ON Genres.genre_id = Books.genre_id
+                WHERE Books.book_id IN (?);
+                """
+            
+            ids = []
+            for row_obj in book_ids:
+                ids += [row_obj["book_id"]]
+            if ids:
+                res = cur.execute(sql, (*ids, ))
+                books = res.fetchall()
+
+
+            # atlasa reitingus
+            sql = """
+                SELECT book_id, SUM(score), COUNT(rating_id)
+                FROM ratings
+                GROUP BY book_id;"""
+            res = cur.execute(sql)
+            ratings = res.fetchall()
+            """ for rating in ratings:
+                print(
+                    rating["book_id"], 
+                    rating["SUM(score)"],
+                    rating["COUNT(rating_id)"]) """
+            
+            return render_template(
+                "books.html", 
+                mybooks=books,
+                ratings_by_books=ratings)
+        else:
+            return redirect("/login")
 
 @app.route("/pievienot_gramatu", methods = ["GET", "POST"])
 def add_book():
@@ -82,13 +100,26 @@ def add_book():
                 VALUES 
                 (?, ?, ?, ?, ?);"""
         
+        book_id = str(uuid4())
         cur.execute(sql,
-                (str(uuid4()),
+                 (book_id,
                  author,
                  name,
                  int(pages),
                  genre
                 ))
+        
+        sql = """
+            INSERT INTO Book_links
+            (link_id, user_id, book_id)
+            VALUES (?, ?, ?);"""
+        
+        cur.execute(sql, (
+            str(uuid4()),
+            session["user_id"],
+            book_id
+        ))
+
         con.commit()
         flash("Ieraksts pievienots!")
         return redirect("/")
@@ -187,6 +218,7 @@ def register():
             ))
 
             con.commit()
+            flash("Reģistrācija veiksmīga!")
             return redirect("/login")
         except:
             flash("Datu bāzes kļūda!")
@@ -230,6 +262,13 @@ def login():
         return redirect("\sakums")
     else:
         return render_template("login.html")
+
+@app.route("/iziet")
+def logout():
+    for key in session:
+        session[key] = None
+    flash("Esi izlogojies!")
+    return redirect("/")
 
 if app.config["FLASK_ENV"] == "development":
     if __name__ == "__main__":
