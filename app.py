@@ -56,10 +56,9 @@ def index():
             ids = []
             for row_obj in book_ids:
                 ids += [row_obj["book_id"]]
-            if ids:
-                res = cur.execute(sql, (*ids, ))
-                books = res.fetchall()
-
+            for id in ids:
+                res = cur.execute(sql, (id, ))
+                books += res.fetchall()
 
             # atlasa reitingus
             sql = """
