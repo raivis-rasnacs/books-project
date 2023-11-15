@@ -269,6 +269,13 @@ def logout():
     flash("Esi izlogojies!")
     return redirect("/")
 
+@app.route("/filter", methods=["POST"])
+def filter():
+    column = request.get_json()["parameter"]
+    print(column)
+
+    return redirect("/")
+
 if app.config["FLASK_ENV"] == "development":
     if __name__ == "__main__":
         app.run(debug=True)

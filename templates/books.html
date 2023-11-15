@@ -6,6 +6,7 @@ Mans grāmatu plaukts
 
 {% block head_inners %}
 <script defer src="{{ url_for('static', filename='js/stars_animation.js') }}"></script>
+<script defer src="{{ url_for('static', filename='js/filtering_engine.js') }}"></script>
 
 {% endblock %}
 
@@ -14,19 +15,26 @@ Mans grāmatu plaukts
         <tr>
             <th>
                 Nosaukums
+                <i class="bi bi-funnel" onclick="showFiltered('name')"></i>
             </th>
             <th>
                 Autors
+                <i class="bi bi-funnel" onclick="showFiltered('author')"></i>
             </th>
-            <th>Lappušu skaits</th>
+            <th>
+                Lappušu skaits
+                <i class="bi bi-funnel" onclick="showFiltered('pages')"></i>
+            </th>
             <th>
                 Žanrs
+                <i class="bi bi-funnel" onclick="showFiltered('genre')"></i>
             </th>
             <th>
                 Novērtēt
             </th>
             <th>
                 Reitings
+                <i class="bi bi-funnel" onclick="showFiltered('rating')"></i>
             </th>
         </tr>
         {% if mybooks != None %}
