@@ -6,7 +6,8 @@ from flask import (
     render_template,
     redirect,
     flash,
-    session
+    session,
+    jsonify
 )
 from config import Config
 import sqlite3
@@ -274,7 +275,46 @@ def filter():
     column = request.get_json()["parameter"]
     print(column)
 
-    return redirect("/")
+    if column == "name":
+        column = "book_name"
+    elif column == "genre":
+        column = "genre_name"
+    elif column == "rating":
+        column = "average_rating"
+
+    sql = f"""
+        SELECT
+            Books.book_id,
+            Books.author,
+            Books.name AS book_name,
+            Books.pages,
+            Genres.name AS genre_name,
+            AVG(Ratings.score) AS average_rating
+        FROM Books
+        JOIN Ratings ON Books.book_id = Ratings.book_id
+        JOIN Book_links ON Books.book_id = Book_links.book_id
+        JOIN Genres ON Genres.genre_id = Books.genre_id
+        WHERE Book_links.user_id = ?
+        GROUP BY 
+            Books.book_id,
+            Books.author,
+            book_name,
+            Books.pages,
+            genre_name
+        ORDER BY {column};
+        """
+
+    res = cur.execute(sql, (session["user_id"], ))
+    books = res.fetchall()
+    print(books)
+
+    books_list = {"books":[]}
+    for book in books:
+        books_list["books"].append(dict(book))
+
+    return jsonify({
+        "response":books_list
+    })
 
 if app.config["FLASK_ENV"] == "development":
     if __name__ == "__main__":
