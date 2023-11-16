@@ -11,7 +11,7 @@ Mans grāmatu plaukts
 {% endblock %}
 
 {% block main_content %}
-    <table class="table">
+    <table class="table" id="gramatuTabula">
         <tr>
             <th>
                 Nosaukums
@@ -39,7 +39,7 @@ Mans grāmatu plaukts
         </tr>
         {% if mybooks != None %}
             {% for book in mybooks %}
-                <tr>
+                <tr class="bookRow">
                     <td>{{ book["book_name"] }}</td>
                     <td>{{ book["author"] }}</td>
                     <td>{{ book["pages"] }}</td>
